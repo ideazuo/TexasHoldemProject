@@ -1,26 +1,20 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening; // 需要引入DOTween命名空间
 
 /// <summary>
 /// 卡牌视图，负责单张牌的视觉表现
 /// </summary>
 public class CardView : MonoBehaviour, IPointerClickHandler
 {
-    // 卡牌背景图片
-    [SerializeField] private Image cardBackground;
-    
     // 花色图片
     [SerializeField] private Image suitImage;
     
     // 点数文本
     [SerializeField] private Text rankText;
-    
-    // 卡牌正面和背面
-    [SerializeField] private GameObject cardFront;
-    [SerializeField] private GameObject cardBack;
     
     // 卡牌高亮效果
     [SerializeField] private GameObject highlightEffect;
@@ -33,10 +27,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     private Quaternion targetRotation;
     
     // 移动动画的持续时间
-    private float moveDuration = 0.3f;
+    [SerializeField] private float moveDuration = 0.5f;
+    [SerializeField] private Ease moveEase = Ease.InOutQuad; // DOTween内置的缓动函数
     
     // 是否正在移动
-    private bool isMoving = false;
+    private Sequence moveSequence;
 
     /// <summary>
     /// 设置卡牌模型
@@ -158,56 +153,36 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         targetPosition = position;
         targetRotation = rotation;
         
-        // 启动移动协程
-        if (!isMoving)
+        // 如果有正在进行的动画，先停止
+        if (moveSequence != null && moveSequence.IsActive())
         {
-            StartCoroutine(MoveCardCoroutine());
-        }
-    }
-
-    /// <summary>
-    /// 卡牌移动协程
-    /// </summary>
-    private IEnumerator MoveCardCoroutine()
-    {
-        isMoving = true;
-        
-        Vector3 startPosition = transform.position;
-        Quaternion startRotation = transform.rotation;
-        
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < moveDuration)
-        {
-            // 计算插值系数
-            float t = elapsedTime / moveDuration;
-            
-            // 使用平滑曲线
-            t = Mathf.SmoothStep(0, 1, t);
-            
-            // 更新位置和旋转
-            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
-            
-            // 更新时间
-            elapsedTime += Time.deltaTime;
-            
-            yield return null;
+            moveSequence.Kill();
         }
         
-        // 确保最终位置和旋转准确
-        transform.position = targetPosition;
-        transform.rotation = targetRotation;
+        // 创建新的动画序列
+        moveSequence = DOTween.Sequence();
         
-        isMoving = false;
+        // 添加位置动画
+        moveSequence.Join(transform.DOMove(targetPosition, moveDuration).SetEase(moveEase));
+        
+        // 添加旋转动画
+        moveSequence.Join(transform.DORotateQuaternion(targetRotation, moveDuration).SetEase(moveEase));
+        
+        // 添加完成回调(可选)
+        moveSequence.OnComplete(() => {
+            // 确保最终位置和旋转准确
+            transform.position = targetPosition;
+            transform.rotation = targetRotation;
+            OnDestroyMove();
+        });
     }
 
-    /// <summary>
-    /// 翻转卡牌
-    /// </summary>
-    public void FlipCard(bool showFront)
+    private void OnDestroyMove()
     {
-        cardFront.SetActive(showFront);
-        cardBack.SetActive(!showFront);
+        // 确保在销毁对象时停止所有动画
+        if (moveSequence != null && moveSequence.IsActive())
+        {
+            moveSequence.Kill();
+        }
     }
 } 
