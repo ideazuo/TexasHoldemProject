@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -278,7 +278,7 @@ public class GameController : MonoBehaviour
         gameModel.SetGameState(GameState.Ended);
         
         // 判断胜负
-        bool isWin = gameModel.GetScore() >= LevelConfig.GetWinScore();
+        bool isWin = gameModel.GetScore() >= LevelConfig.GetWinScore(2);
         gameModel.SetGameResult(isWin);
         
         // 显示结果界面

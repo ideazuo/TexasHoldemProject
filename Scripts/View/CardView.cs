@@ -16,8 +16,8 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     // 点数文本
     [SerializeField] private Text rankText;
     
-    // 卡牌高亮效果
-    [SerializeField] private GameObject highlightEffect;
+    // 卡牌无法点击效果
+    [SerializeField] private GameObject coverEffect;
     
     // 卡牌模型引用
     private CardModel cardModel;
@@ -65,13 +65,13 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
-    /// 设置花色图片
+    /// 设置花色和点图片
     /// </summary>
     private void SetSuitImage(CardSuit suit)
     {
         // 根据花色设置对应的Sprite
         string suitSpriteName = suit.ToString().ToLower();
-        Sprite suitSprite = Resources.Load<Sprite>("CardIcons/" + suitSpriteName);
+        Sprite suitSprite = Resources.Load<Sprite>("Images/" + suitSpriteName);
         
         if (suitSprite != null)
         {
@@ -125,9 +125,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         // 根据卡牌模型的可点击状态显示或隐藏高亮效果
         bool isClickable = cardModel.IsClickable();
         
-        if (highlightEffect != null)
+        if (coverEffect != null)
         {
-            highlightEffect.SetActive(isClickable);
+            coverEffect.SetActive(!isClickable);
         }
     }
 
