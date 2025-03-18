@@ -144,12 +144,12 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     /// </summary>
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (cardModel == null) return;
+        if (this == null) return;
         
         // 如果卡牌可点击，通知卡牌控制器处理点击事件
-        if (cardModel.IsClickable())
+        if (this.GetCardModel().IsClickable())
         {
-            CardController.Instance.OnCardClicked(cardModel);
+            CardController.Instance.OnCardClicked(this);
         }
     }
 

@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 /// <summary>
@@ -10,32 +11,23 @@ public class OverlapDetector
     /// <summary>
     /// 计算牌之间的遮盖关系
     /// </summary>
-    public void CalculateOverlap(List<CardModel> cards)
+    public void CalculateOverlap(Transform handTransform)
     {
         // 首先将所有牌设置为可点击
-        foreach (var card in cards)
+        for (int i = 0; i < handTransform.childCount; i++)
         {
-            card.SetClickable(true);
-        }
-        
-        // 如果牌的数量小于2，不需要检测重叠
-        if (cards.Count < 2)
-        {
-            return;
+            handTransform.GetChild(i).GetComponent<CardView>().GetCardModel().SetClickable(true);
         }
 
         // 检测遮盖关系
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < handTransform.childCount; i++)
         {
-            for (int j = i + 1; j < cards.Count; j++)
+            if (IsOverlapping(handTransform.GetChild(i).GetComponent<CardView>(), handTransform))
             {
-                // 如果两张牌重叠，设置被遮挡的牌为不可点击
-                if (IsOverlapping(cards[i], cards[j]))
-                {
-                    // 在牌堆中，索引较小的牌在下面，索引较大的牌在上面
-                    // 所以当有重叠时，索引较小的牌被遮挡
-                    cards[i].SetClickable(false);
-                }
+                // 在牌堆中，索引较小的牌在下面，索引较大的牌在上面
+                // 所以当有重叠时，索引较小的牌被遮挡
+                handTransform.GetChild(i).GetComponent<CardView>().GetCardModel().SetClickable(false);
+                handTransform.GetChild(i).GetComponent<CardView>().UpdateClickableState();
             }
         }
     }
@@ -43,35 +35,53 @@ public class OverlapDetector
     /// <summary>
     /// 判断两张牌是否重叠
     /// </summary>
-    private bool IsOverlapping(CardModel card1, CardModel card2)
+    private bool IsOverlapping(CardView card1, Transform handTransform)
     {
-        // 获取牌的位置
-        Vector2 pos1 = card1.GetPosition();
-        Vector2 pos2 = card2.GetPosition();
-        
-        // 假设牌的宽高
-        float cardWidth = 2.5f;
-        float cardHeight = 3.5f;
-        
-        // 计算每张牌的边界
-        float card1Left = pos1.x - cardWidth / 2;
-        float card1Right = pos1.x + cardWidth / 2;
-        float card1Bottom = pos1.y - cardHeight / 2;
-        float card1Top = pos1.y + cardHeight / 2;
-        
-        float card2Left = pos2.x - cardWidth / 2;
-        float card2Right = pos2.x + cardWidth / 2;
-        float card2Bottom = pos2.y - cardHeight / 2;
-        float card2Top = pos2.y + cardHeight / 2;
-        
-        // 判断是否不重叠
-        bool noOverlap = 
-            card1Right < card2Left || // 卡牌1在卡牌2左侧
-            card1Left > card2Right || // 卡牌1在卡牌2右侧
-            card1Top < card2Bottom || // 卡牌1在卡牌2下方
-            card1Bottom > card2Top;   // 卡牌1在卡牌2上方
-        
-        // 返回重叠结果
-        return !noOverlap;
+        // 获取当前卡牌在容器中的索引
+        int myIndex = card1.transform.GetSiblingIndex();
+
+        // 获取当前卡牌的矩形区域
+        Rect myRect = GetWorldRect(card1);
+
+        // 检查是否被其他卡牌遮挡
+        for (int i = 0; i < handTransform.childCount; i++)
+        {
+            // 只检查在我之上（层级更高）的卡牌
+            if (i > myIndex)
+            {
+                CardView otherCard = handTransform.GetChild(i).GetComponent<CardView>();
+
+                if (otherCard != null)
+                {
+                    Rect otherWorldRect = GetWorldRect(otherCard);
+
+                    // 如果两个矩形相交且重叠面积超过阈值，认为被遮挡
+                    if (myRect.Overlaps(otherWorldRect))
+                    {
+                            return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 获取CardView在世界空间的矩形
+    /// </summary>
+    /// <param name="cardView">要转换的CardView</param>
+    /// <returns>世界空间中的矩形</returns>
+    private Rect GetWorldRect(CardView cardView)
+    {
+        Vector3[] corners = new Vector3[4];
+        cardView.transform.GetComponent<RectTransform>().GetWorldCorners(corners);
+
+        float xMin = corners[0].x;
+        float yMin = corners[0].y;
+        float xMax = corners[2].x;
+        float yMax = corners[2].y;
+
+        return new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
     }
 }

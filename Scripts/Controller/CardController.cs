@@ -14,6 +14,9 @@ public class CardController : MonoBehaviour
     private CardsAreaModel cardsAreaModel;
     private OperationHistoryModel operationHistoryModel;
 
+    // 视图引用
+    private UIManager uiManager;
+
     // 初始化方法
     public void Initialize(CardsAreaModel cardsModel)
     {
@@ -35,15 +38,15 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 处理卡牌点击事件
     /// </summary>
-    public void OnCardClicked(CardModel card)
+    public void OnCardClicked(CardView card)
     {
         // 判断卡牌所在区域
-        if (card.IsInHandArea())
+        if (card.GetCardModel().IsInHandArea())
         {
             // 如果是手牌区的牌，移动到出牌区
             MoveCardFromHandToPlay(card);
         }
-        else if (card.IsInWaitArea())
+        else if (card.GetCardModel().IsInWaitArea())
         {
             // 如果是等待区的牌，移动到出牌区
             MoveCardFromWaitToPlay(card);
@@ -54,10 +57,10 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 将牌从手牌区移动到出牌区
     /// </summary>
-    private void MoveCardFromHandToPlay(CardModel card)
+    private void MoveCardFromHandToPlay(CardView card)
     {
         // 检查牌是否可点击
-        if (!card.IsClickable()) return;
+        if (!card.GetCardModel().IsClickable()) return;
         
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
@@ -78,7 +81,7 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 将牌从等待区移动到出牌区
     /// </summary>
-    private void MoveCardFromWaitToPlay(CardModel card)
+    private void MoveCardFromWaitToPlay(CardView card)
     {
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
@@ -98,11 +101,8 @@ public class CardController : MonoBehaviour
     /// </summary>
     public void UpdateCardsOverlap()
     {
-        // 获取手牌区的牌
-        List<CardModel> handCards = cardsAreaModel.GetHandAreaCards();
-        
         // 使用OverlapDetector计算遮盖关系
-        GameController.Instance.GetOverlapDetector().CalculateOverlap(handCards);
+        GameController.Instance.GetOverlapDetector().CalculateOverlap(uiManager.HandAreaContainer);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public class CardController : MonoBehaviour
     public void MoveClickableCardsToWaitArea()
     {
         // 获取可点击的手牌
-        List<CardModel> clickableCards = cardsAreaModel.GetClickableHandAreaCards();
+        List<CardView> clickableCards = cardsAreaModel.GetClickableHandAreaCards();
         
         // 如果没有可点击的牌，直接返回
         if (clickableCards.Count == 0) return;
@@ -156,7 +156,7 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 添加新牌到手牌区
     /// </summary>
-    public void AddCardsToHandArea(List<CardModel> cards)
+    public void AddCardsToHandArea(List<CardView> cards)
     {
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.AddCardsToHand, cards);
@@ -177,7 +177,7 @@ public class CardController : MonoBehaviour
     public void ShuffleHandCards()
     {
         // 记录操作
-        List<CardModel> handCards = new List<CardModel>(cardsAreaModel.GetHandAreaCards());
+        List<CardView> handCards = new List<CardView>(cardsAreaModel.GetHandAreaCards());
         operationHistoryModel.RecordOperation(OperationType.ShuffleHandCards, handCards);
         
         // 洗牌
@@ -234,7 +234,7 @@ public class CardController : MonoBehaviour
         foreach (var card in operation.Cards)
         {
             // 获取原始区域
-            CardArea previousArea = operation.PreviousAreas[card.GetID()];
+            CardArea previousArea = operation.PreviousAreas[card.GetCardModel().GetID()];
             
             // 从出牌区移除
             cardsAreaModel.RemoveCardFromPlayArea(card);

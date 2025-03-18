@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -9,18 +9,18 @@ using System.Linq;
 public class CardsAreaModel
 {
     // 手牌区的牌集合
-    private List<CardModel> handAreaCards = new List<CardModel>();
+    private List<CardView> handAreaCards = new List<CardView>();
 
     // 出牌区的牌集合
-    private List<CardModel> playAreaCards = new List<CardModel>();
+    private List<CardView> playAreaCards = new List<CardView>();
 
     // 等待区的牌集合
-    private List<CardModel> waitAreaCards = new List<CardModel>();
+    private List<CardView> waitAreaCards = new List<CardView>();
 
     /// <summary>
     /// 获取手牌区的牌集合
     /// </summary>
-    public List<CardModel> GetHandAreaCards()
+    public List<CardView> GetHandAreaCards()
     {
         return handAreaCards;
     }
@@ -28,7 +28,7 @@ public class CardsAreaModel
     /// <summary>
     /// 获取出牌区的牌集合
     /// </summary>
-    public List<CardModel> GetPlayAreaCards()
+    public List<CardView> GetPlayAreaCards()
     {
         return playAreaCards;
     }
@@ -36,7 +36,7 @@ public class CardsAreaModel
     /// <summary>
     /// 获取等待区的牌集合
     /// </summary>
-    public List<CardModel> GetWaitAreaCards()
+    public List<CardView> GetWaitAreaCards()
     {
         return waitAreaCards;
     }
@@ -44,16 +44,16 @@ public class CardsAreaModel
     /// <summary>
     /// 添加牌到手牌区
     /// </summary>
-    public void AddCardToHandArea(CardModel card)
+    public void AddCardToHandArea(CardView card)
     {
-        card.SetArea(CardArea.Hand);
+        card.GetCardModel().SetArea(CardArea.Hand);
         handAreaCards.Add(card);
     }
 
     /// <summary>
     /// 添加多张牌到手牌区
     /// </summary>
-    public void AddCardsToHandArea(List<CardModel> cards)
+    public void AddCardsToHandArea(List<CardView> cards)
     {
         foreach (var card in cards)
         {
@@ -64,25 +64,25 @@ public class CardsAreaModel
     /// <summary>
     /// 添加牌到出牌区
     /// </summary>
-    public void AddCardToPlayArea(CardModel card)
+    public void AddCardToPlayArea(CardView card)
     {
-        card.SetArea(CardArea.Play);
+        card.GetCardModel().SetArea(CardArea.Play);
         playAreaCards.Add(card);
     }
 
     /// <summary>
     /// 添加牌到等待区
     /// </summary>
-    public void AddCardToWaitArea(CardModel card)
+    public void AddCardToWaitArea(CardView card)
     {
-        card.SetArea(CardArea.Wait);
+        card.GetCardModel().SetArea(CardArea.Wait);
         waitAreaCards.Add(card);
     }
 
     /// <summary>
     /// 移除手牌区的牌
     /// </summary>
-    public void RemoveCardFromHandArea(CardModel card)
+    public void RemoveCardFromHandArea(CardView card)
     {
         handAreaCards.Remove(card);
     }
@@ -90,7 +90,7 @@ public class CardsAreaModel
     /// <summary>
     /// 移除出牌区的牌
     /// </summary>
-    public void RemoveCardFromPlayArea(CardModel card)
+    public void RemoveCardFromPlayArea(CardView card)
     {
         playAreaCards.Remove(card);
     }
@@ -98,7 +98,7 @@ public class CardsAreaModel
     /// <summary>
     /// 移除等待区的牌
     /// </summary>
-    public void RemoveCardFromWaitArea(CardModel card)
+    public void RemoveCardFromWaitArea(CardView card)
     {
         waitAreaCards.Remove(card);
     }
@@ -154,9 +154,9 @@ public class CardsAreaModel
     /// <summary>
     /// 获取手牌区中可点击的牌
     /// </summary>
-    public List<CardModel> GetClickableHandAreaCards()
+    public List<CardView> GetClickableHandAreaCards()
     {
-        return handAreaCards.Where(card => card.IsClickable()).ToList();
+        return handAreaCards.Where(card => card.GetCardModel().IsClickable()).ToList();
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ public class CardsAreaModel
     public void MoveClickableCardsToWaitArea()
     {
         // 获取可点击的牌
-        List<CardModel> clickableCards = GetClickableHandAreaCards();
+        List<CardView> clickableCards = GetClickableHandAreaCards();
 
         // 将牌移到等待区
         foreach (var card in clickableCards)
@@ -180,9 +180,9 @@ public class CardsAreaModel
     /// <summary>
     /// 将牌从手牌区移到出牌区
     /// </summary>
-    public void MoveCardFromHandToPlay(CardModel card)
+    public void MoveCardFromHandToPlay(CardView card)
     {
-        if (card.IsInHandArea() && card.IsClickable())
+        if (card.GetCardModel().IsInHandArea() && card.GetCardModel().IsClickable())
         {
             // 从手牌区移除
             RemoveCardFromHandArea(card);
@@ -194,9 +194,9 @@ public class CardsAreaModel
     /// <summary>
     /// 将牌从等待区移到出牌区
     /// </summary>
-    public void MoveCardFromWaitToPlay(CardModel card)
+    public void MoveCardFromWaitToPlay(CardView card)
     {
-        if (card.IsInWaitArea())
+        if (card.GetCardModel().IsInWaitArea())
         {
             // 从等待区移除
             RemoveCardFromWaitArea(card);
@@ -211,7 +211,7 @@ public class CardsAreaModel
     public void ShuffleHandAreaCards()
     {
         // 复制当前手牌
-        List<CardModel> currentCards = new List<CardModel>(handAreaCards);
+        List<CardView> currentCards = new List<CardView>(handAreaCards);
         // 清空手牌区
         handAreaCards.Clear();
         
@@ -222,7 +222,7 @@ public class CardsAreaModel
         {
             n--;
             int k = rng.Next(n + 1);
-            CardModel temp = currentCards[k];
+            CardView temp = currentCards[k];
             currentCards[k] = currentCards[n];
             currentCards[n] = temp;
         }

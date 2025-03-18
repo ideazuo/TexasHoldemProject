@@ -218,14 +218,20 @@ public class GameController : MonoBehaviour
         int cardCount = LevelConfig.GetInitialCardCount(gameModel.GetLevelID());
         
         // 生成牌并添加到手牌区
-        List<CardModel> cards = cardGenerator.GenerateCards(cardCount);
-        cardsAreaModel.AddCardsToHandArea(cards);
+        List<CardModel> cardModels = cardGenerator.GenerateCards(cardCount);
+        List<CardView> cardViews = new List<CardView>();
+        for (int i = 0; i < cardModels.Count; i++)
+        {
+            cardViews.Add(uiManager.CreateCardView(cardModels[i]));
+        }
+        cardsAreaModel.AddCardsToHandArea(cardViews);
+        uiManager.SetHandCardsPos(cardViews);
         
         // 计算牌的遮盖关系
-        overlapDetector.CalculateOverlap(cardsAreaModel.GetHandAreaCards());
+        overlapDetector.CalculateOverlap(uiManager.HandAreaContainer);
         
         // 更新UI显示
-        uiManager.UpdateCardsDisplay();
+        //uiManager.UpdateCardsDisplay();
     }
 
     /// <summary>
@@ -291,7 +297,7 @@ public class GameController : MonoBehaviour
     public void HandlePlayAreaFull()
     {
         // 获取出牌区的牌
-        List<CardModel> playAreaCards = cardsAreaModel.GetPlayAreaCards();
+        List<CardView> playAreaCards = cardsAreaModel.GetPlayAreaCards();
         
         // 如果出牌区有5张牌
         if (playAreaCards.Count == 5)

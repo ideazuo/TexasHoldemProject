@@ -32,8 +32,15 @@ public class UIManager : MonoBehaviour
     // 手牌区容器
     [SerializeField] private Transform handAreaContainer;
 
-    // 手牌
-    
+    // 手牌区属性
+    public Transform HandAreaContainer
+    {
+        get
+        {
+            return handAreaContainer;
+        }
+    }
+
     // 出牌区容器
     [SerializeField] private Transform playAreaContainer;
     
@@ -209,7 +216,7 @@ public class UIManager : MonoBehaviour
         return cardView;
     }
 
-    private void SetHandCardsPos(Dictionary<int,CardView> cardViews)
+    public void SetHandCardsPos(List<CardView> cardViews)
     {
         List<Transform> cardPositions = new List<Transform>();
         for (int i = 0; i < posAreaContainer.childCount; i++)
@@ -218,7 +225,7 @@ public class UIManager : MonoBehaviour
         }
 
         int j = 0;
-        foreach (var cardView in cardViews.Values)
+        foreach (var cardView in cardViews)
         {
             cardView.transform.SetParent(handAreaContainer, false);
             cardView.transform.position = cardPositions[j].position;
@@ -259,21 +266,21 @@ public class UIManager : MonoBehaviour
         // 重新创建手牌区卡牌视图
         foreach (var card in cardsAreaModel.GetHandAreaCards())
         {
-            handCardViewDict[card.GetID()] = CreateCardView(card);
+            handCardViewDict[card.GetCardModel().GetID()] = CreateCardView(card.GetCardModel());
         }
-        SetHandCardsPos(handCardViewDict);
+        //SetHandCardsPos(handCardViewDict);
 
 
         // 重新创建出牌区卡牌视图
         foreach (var card in cardsAreaModel.GetPlayAreaCards())
         {
-            CreateCardView(card);
+            CreateCardView(card.GetCardModel());
         }
         
         // 重新创建等待区卡牌视图
         foreach (var card in cardsAreaModel.GetWaitAreaCards())
         {
-            CreateCardView(card);
+            CreateCardView(card.GetCardModel());
         }
         
         // 更新手牌数量显示
