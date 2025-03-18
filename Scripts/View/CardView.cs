@@ -48,6 +48,14 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
+    /// 获取卡牌模型
+    /// </summary>
+    public CardModel GetCardModel()
+    {
+        return cardModel;
+    }
+
+    /// <summary>
     /// 更新卡牌外观
     /// </summary>
     private void UpdateCardAppearance()

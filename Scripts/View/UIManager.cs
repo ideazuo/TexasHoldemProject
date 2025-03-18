@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,9 +25,14 @@ public class UIManager : MonoBehaviour
     
     // 游戏界面上显示手牌区牌数量的文本
     [SerializeField] private Text handCardCountText;
-    
+
+    // 手牌区坐标容器
+    [SerializeField] private Transform posAreaContainer;
+
     // 手牌区容器
     [SerializeField] private Transform handAreaContainer;
+
+    // 手牌
     
     // 出牌区容器
     [SerializeField] private Transform playAreaContainer;
@@ -57,8 +62,13 @@ public class UIManager : MonoBehaviour
     private GameModel gameModel;
     private CardsAreaModel cardsAreaModel;
     
-    // 卡牌视图字典，用于快速查找卡牌对应的视图对象
+    // 所有卡牌视图字典，用于快速查找卡牌对应的视图对象
     private Dictionary<int, CardView> cardViewDict = new Dictionary<int, CardView>();
+
+    // 手牌区卡牌视图字典
+    private Dictionary<int, CardView> handCardViewDict = new Dictionary<int, CardView>();
+
+
 
     /// <summary>
     /// 初始化UI管理器
@@ -190,13 +200,34 @@ public class UIManager : MonoBehaviour
         cardView.SetCardModel(cardModel);
         
         // 根据卡牌所在区域设置父物体
-        Transform parent = GetParentTransformByArea(cardModel.GetArea());
-        cardObject.transform.SetParent(parent, false);
+        //Transform parent = GetParentTransformByArea(cardModel.GetArea());
+        //cardObject.transform.SetParent(parent, false);
         
         // 添加到字典
         cardViewDict[cardModel.GetID()] = cardView;
         
         return cardView;
+    }
+
+    private void SetHandCardsPos(Dictionary<int,CardView> cardViews)
+    {
+        List<Transform> cardPositions = new List<Transform>();
+        for (int i = 0; i < posAreaContainer.childCount; i++)
+        {
+            cardPositions.Add(posAreaContainer.GetChild(i));
+        }
+
+        int j = 0;
+        foreach (var cardView in cardViews.Values)
+        {
+            cardView.transform.SetParent(handAreaContainer, false);
+            cardView.transform.position = cardPositions[j].position;
+            j++;
+            if (j >= cardPositions.Count - 1)
+            {
+                j = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -228,9 +259,11 @@ public class UIManager : MonoBehaviour
         // 重新创建手牌区卡牌视图
         foreach (var card in cardsAreaModel.GetHandAreaCards())
         {
-            CreateCardView(card);
+            handCardViewDict[card.GetID()] = CreateCardView(card);
         }
-        
+        SetHandCardsPos(handCardViewDict);
+
+
         // 重新创建出牌区卡牌视图
         foreach (var card in cardsAreaModel.GetPlayAreaCards())
         {
