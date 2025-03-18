@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class OverlapDetector
 {
-    // 检测是否重叠的阈值
-    private float overlapThreshold = 0.4f;
-
     /// <summary>
     /// 计算牌之间的遮盖关系
     /// </summary>
@@ -56,22 +53,25 @@ public class OverlapDetector
         float cardWidth = 2.5f;
         float cardHeight = 3.5f;
         
-        // 计算两张牌中心点之间的距离
-        float distanceX = Mathf.Abs(pos1.x - pos2.x);
-        float distanceY = Mathf.Abs(pos1.y - pos2.y);
+        // 计算每张牌的边界
+        float card1Left = pos1.x - cardWidth / 2;
+        float card1Right = pos1.x + cardWidth / 2;
+        float card1Bottom = pos1.y - cardHeight / 2;
+        float card1Top = pos1.y + cardHeight / 2;
         
-        // 如果两张牌在两个方向上的重叠都超过阈值，则认为有遮挡
-        bool isOverlappingX = distanceX < cardWidth * overlapThreshold;
-        bool isOverlappingY = distanceY < cardHeight * overlapThreshold;
+        float card2Left = pos2.x - cardWidth / 2;
+        float card2Right = pos2.x + cardWidth / 2;
+        float card2Bottom = pos2.y - cardHeight / 2;
+        float card2Top = pos2.y + cardHeight / 2;
         
-        return isOverlappingX && isOverlappingY;
-    }
-
-    /// <summary>
-    /// 设置重叠检测阈值
-    /// </summary>
-    public void SetOverlapThreshold(float threshold)
-    {
-        this.overlapThreshold = Mathf.Clamp(threshold, 0.1f, 0.9f);
+        // 判断是否不重叠
+        bool noOverlap = 
+            card1Right < card2Left || // 卡牌1在卡牌2左侧
+            card1Left > card2Right || // 卡牌1在卡牌2右侧
+            card1Top < card2Bottom || // 卡牌1在卡牌2下方
+            card1Bottom > card2Top;   // 卡牌1在卡牌2上方
+        
+        // 返回重叠结果
+        return !noOverlap;
     }
 }

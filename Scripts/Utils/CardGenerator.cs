@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -11,37 +11,17 @@ public class CardGenerator
     // 已生成的牌的ID计数器
     private int cardIdCounter = 0;
     
-    // 已生成的牌记录，用于确保不重复生成
-    private List<(CardSuit, CardRank)> generatedCards = new List<(CardSuit, CardRank)>();
-
     /// <summary>
     /// 生成单张牌
     /// </summary>
     public CardModel GenerateCard()
     {
-        // 如果已经生成了所有52张牌，则返回null
-        if (generatedCards.Count >= 52)
-        {
-            Debug.LogWarning("已经生成了所有52张牌，无法继续生成");
-            return null;
-        }
-
         // 随机生成花色和点数
-        CardSuit suit;
-        CardRank rank;
+        // 随机花色
+        CardSuit suit = (CardSuit)Random.Range(0, 4);
         
-        do
-        {
-            // 随机花色
-            suit = (CardSuit)Random.Range(0, 4);
-            
-            // 随机点数（2-14）
-            rank = (CardRank)Random.Range(2, 15);
-            
-        } while (generatedCards.Contains((suit, rank))); // 确保不重复
-        
-        // 记录已生成的牌
-        generatedCards.Add((suit, rank));
+        // 随机点数（2-14）
+        CardRank rank = (CardRank)Random.Range(2, 15);
         
         // 创建牌模型
         CardModel card = new CardModel(cardIdCounter++, suit, rank);
@@ -59,15 +39,7 @@ public class CardGenerator
         for (int i = 0; i < count; i++)
         {
             CardModel card = GenerateCard();
-            if (card != null)
-            {
-                cards.Add(card);
-            }
-            else
-            {
-                // 如果无法继续生成，则中断
-                break;
-            }
+            cards.Add(card);
         }
         
         return cards;
@@ -78,7 +50,6 @@ public class CardGenerator
     /// </summary>
     public void Reset()
     {
-        generatedCards.Clear();
         cardIdCounter = 0;
     }
 
@@ -91,15 +62,6 @@ public class CardGenerator
         
         switch (handType)
         {
-            case PokerHandType.RoyalFlush:
-                // 皇家同花顺（同一花色的A, K, Q, J, 10）
-                cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.Ace));
-                cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.King));
-                cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.Queen));
-                cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.Jack));
-                cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.Ten));
-                break;
-                
             case PokerHandType.StraightFlush:
                 // 同花顺（同一花色的连续5张牌）
                 cards.Add(new CardModel(cardIdCounter++, CardSuit.Heart, CardRank.Nine));
@@ -180,12 +142,6 @@ public class CardGenerator
                 cards.Add(new CardModel(cardIdCounter++, CardSuit.Diamond, CardRank.Seven));
                 cards.Add(new CardModel(cardIdCounter++, CardSuit.Spade, CardRank.Two));
                 break;
-        }
-        
-        // 记录已生成的牌
-        foreach (var card in cards)
-        {
-            generatedCards.Add((card.GetSuit(), card.GetRank()));
         }
         
         return cards;

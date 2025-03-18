@@ -19,8 +19,11 @@ public static class LevelConfig
     // 关卡2增加手牌数量
     private static int level2AdditionalCardCount = 3;
     
-    // 通关所需分数
-    private static int winScore = 30000;
+    // 关卡1通关所需分数
+    private static int level1WinScore = 15000;
+    
+    // 关卡2通关所需分数
+    private static int level2WinScore = 30000;
 
     /// <summary>
     /// 获取指定关卡的初始牌数量
@@ -57,11 +60,20 @@ public static class LevelConfig
     }
 
     /// <summary>
-    /// 获取通关所需分数
+    /// 获取指定关卡的通关所需分数
     /// </summary>
-    public static int GetWinScore()
+    public static int GetWinScore(int levelID)
     {
-        return winScore;
+        switch (levelID)
+        {
+            case 1:
+                return level1WinScore;
+            case 2:
+                return level2WinScore;
+            default:
+                Debug.LogWarning("未知关卡ID: " + levelID);
+                return 10000; // 默认值
+        }
     }
 
     /// <summary>
@@ -97,10 +109,18 @@ public static class LevelConfig
     }
 
     /// <summary>
-    /// 设置通关所需分数
+    /// 设置关卡1通关所需分数
     /// </summary>
-    public static void SetWinScore(int score)
+    public static void SetLevel1WinScore(int score)
     {
-        winScore = Mathf.Max(1000, score);
+        level1WinScore = Mathf.Max(1000, score);
+    }
+
+    /// <summary>
+    /// 设置关卡2通关所需分数
+    /// </summary>
+    public static void SetLevel2WinScore(int score)
+    {
+        level2WinScore = Mathf.Max(1000, score);
     }
 } 
