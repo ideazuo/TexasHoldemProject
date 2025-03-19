@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -31,7 +31,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 计算牌的得分
     /// </summary>
-    public static int CalculateScore(List<CardView> cards)
+    public static int CalculateScore(List<CardModel> cards)
     {
         // 判断牌的数量
         if (cards == null || cards.Count > 5)
@@ -56,7 +56,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 评估牌的牌型
     /// </summary>
-    private static PokerHandType EvaluateHand(List<CardView> cards)
+    private static PokerHandType EvaluateHand(List<CardModel> cards)
     {
         // 检查牌数量
         if (cards == null || cards.Count == 0)
@@ -143,20 +143,20 @@ public static class PokerHandCalculator
     /// <summary>
     /// 获取排序后的点数列表
     /// </summary>
-    private static List<int> GetSortedRanks(List<CardView> cards)
+    private static List<int> GetSortedRanks(List<CardModel> cards)
     {
         if (cards == null || cards.Count == 0)
         {
             return new List<int>();
         }
         
-        return cards.Select(c => (int)c.GetCardModel().GetRank()).OrderByDescending(r => r).ToList();
+        return cards.Select(c => (int)c.GetRank()).OrderByDescending(r => r).ToList();
     }
 
     /// <summary>
     /// 检查是否是同花五条
     /// </summary>
-    private static bool IsFlushFiveOfAKind(List<CardView> cards)
+    private static bool IsFlushFiveOfAKind(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 5)
         {
@@ -164,12 +164,12 @@ public static class PokerHandCalculator
         }
         
         // 同花五条：5张相同花色和相同点数的牌
-        CardSuit firstSuit = cards[0].GetCardModel().GetSuit();
-        CardRank firstRank = cards[0].GetCardModel().GetRank();
+        CardSuit firstSuit = cards[0].GetSuit();
+        CardRank firstRank = cards[0].GetRank();
         
         foreach (var card in cards)
         {
-            if (card.GetCardModel().GetSuit() != firstSuit || card.GetCardModel().GetRank() != firstRank)
+            if (card.GetSuit() != firstSuit || card.GetRank() != firstRank)
             {
                 return false;
             }
@@ -181,7 +181,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是同花葫芦
     /// </summary>
-    private static bool IsFlushFullHouse(List<CardView> cards)
+    private static bool IsFlushFullHouse(List<CardModel> cards)
     {
         if (cards == null || cards.Count != 5)
         {
@@ -189,8 +189,8 @@ public static class PokerHandCalculator
         }
         
         // 先检查是否为同花
-        CardSuit firstSuit = cards[0].GetCardModel().GetSuit();
-        bool isFlush = cards.All(c => c.GetCardModel().GetSuit() == firstSuit);
+        CardSuit firstSuit = cards[0].GetSuit();
+        bool isFlush = cards.All(c => c.GetSuit() == firstSuit);
         
         if (!isFlush)
         {
@@ -202,11 +202,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 葫芦结构必须有且仅有两种点数，一种出现3次，另一种出现2次
@@ -216,7 +216,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是五条
     /// </summary>
-    private static bool IsFiveOfAKind(List<CardView> cards)
+    private static bool IsFiveOfAKind(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 5)
         {
@@ -224,14 +224,14 @@ public static class PokerHandCalculator
         }
         
         // 检查所有牌的点数是否相同
-        CardRank firstRank = cards[0].GetCardModel().GetRank();
-        return cards.All(c => c.GetCardModel().GetRank() == firstRank);
+        CardRank firstRank = cards[0].GetRank();
+        return cards.All(c => c.GetRank() == firstRank);
     }
 
     /// <summary>
     /// 检查是否是同花顺
     /// </summary>
-    private static bool IsStraightFlush(List<CardView> cards)
+    private static bool IsStraightFlush(List<CardModel> cards)
     {
         if (cards == null || cards.Count != 5)
         {
@@ -245,7 +245,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是四条
     /// </summary>
-    private static bool IsFourOfAKind(List<CardView> cards)
+    private static bool IsFourOfAKind(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 4)
         {
@@ -256,11 +256,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 如果有任何一个点数出现了4次或更多，则为四条
@@ -270,7 +270,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是葫芦
     /// </summary>
-    private static bool IsFullHouse(List<CardView> cards)
+    private static bool IsFullHouse(List<CardModel> cards)
     {
         if (cards == null || cards.Count != 5)
         {
@@ -281,11 +281,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 葫芦结构必须有且仅有两种点数，一种出现3次，另一种出现2次
@@ -295,7 +295,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是同花
     /// </summary>
-    private static bool IsFlush(List<CardView> cards)
+    private static bool IsFlush(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 5)
         {
@@ -303,14 +303,14 @@ public static class PokerHandCalculator
         }
         
         // 同花：所有牌都是相同花色
-        CardSuit firstSuit = cards[0].GetCardModel().GetSuit();
-        return cards.All(c => c.GetCardModel().GetSuit() == firstSuit);
+        CardSuit firstSuit = cards[0].GetSuit();
+        return cards.All(c => c.GetSuit() == firstSuit);
     }
 
     /// <summary>
     /// 检查是否是顺子
     /// </summary>
-    private static bool IsStraight(List<CardView> cards)
+    private static bool IsStraight(List<CardModel> cards)
     {
         if (cards == null || cards.Count != 5)
         {
@@ -318,7 +318,7 @@ public static class PokerHandCalculator
         }
         
         // 获取所有牌的点数，并排序
-        List<int> ranks = cards.Select(c => (int)c.GetCardModel().GetRank()).OrderBy(r => r).ToList();
+        List<int> ranks = cards.Select(c => (int)c.GetRank()).OrderBy(r => r).ToList();
         
         // 特殊情况：A-2-3-4-5 顺子
         bool isLowStraight = ranks.Contains((int)CardRank.Ace) && 
@@ -359,7 +359,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是三条
     /// </summary>
-    private static bool IsThreeOfAKind(List<CardView> cards)
+    private static bool IsThreeOfAKind(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 3)
         {
@@ -370,11 +370,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 如果是5张牌，确保不是葫芦（葫芦已经在前面的判断中被排除）
@@ -392,7 +392,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是两对
     /// </summary>
-    private static bool IsTwoPair(List<CardView> cards)
+    private static bool IsTwoPair(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 4)
         {
@@ -403,11 +403,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 计算有多少对子
@@ -420,7 +420,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 检查是否是一对
     /// </summary>
-    private static bool IsOnePair(List<CardView> cards)
+    private static bool IsOnePair(List<CardModel> cards)
     {
         if (cards == null || cards.Count < 2)
         {
@@ -431,11 +431,11 @@ public static class PokerHandCalculator
         Dictionary<CardRank, int> rankCounts = new Dictionary<CardRank, int>();
         foreach (var card in cards)
         {
-            if (!rankCounts.ContainsKey(card.GetCardModel().GetRank()))
+            if (!rankCounts.ContainsKey(card.GetRank()))
             {
-                rankCounts[card.GetCardModel().GetRank()] = 0;
+                rankCounts[card.GetRank()] = 0;
             }
-            rankCounts[card.GetCardModel().GetRank()]++;
+            rankCounts[card.GetRank()]++;
         }
         
         // 如果有任何一个点数出现了2次或更多，则为对子
@@ -497,7 +497,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 计算额外分数（基于牌点数）
     /// </summary>
-    private static int CalculateExtraScore(List<CardView> cards, PokerHandType handType)
+    private static int CalculateExtraScore(List<CardModel> cards, PokerHandType handType)
     {
         if (cards == null || cards.Count == 0)
         {
@@ -513,18 +513,18 @@ public static class PokerHandCalculator
             case PokerHandType.FlushFiveOfAKind:
             case PokerHandType.FiveOfAKind:
                 // 五条，使用这个点数作为额外分数
-                return cards.Count > 0 ? (int)cards[0].GetCardModel().GetRank() : 0;
+                return cards.Count > 0 ? (int)cards[0].GetRank() : 0;
                 
             case PokerHandType.FlushFullHouse:
                 // 同花葫芦，使用三张相同点数的牌点数作为额外分数
                 Dictionary<CardRank, int> fbRankCounts = new Dictionary<CardRank, int>();
                 foreach (var card in cards)
                 {
-                    if (!fbRankCounts.ContainsKey(card.GetCardModel().GetRank()))
+                    if (!fbRankCounts.ContainsKey(card.GetRank()))
                     {
-                        fbRankCounts[card.GetCardModel().GetRank()] = 0;
+                        fbRankCounts[card.GetRank()] = 0;
                     }
-                    fbRankCounts[card.GetCardModel().GetRank()]++;
+                    fbRankCounts[card.GetRank()]++;
                 }
                 var threeOfAKindRank = fbRankCounts.FirstOrDefault(kv => kv.Value == 3).Key;
                 return (int)threeOfAKindRank;
@@ -534,11 +534,11 @@ public static class PokerHandCalculator
                 Dictionary<CardRank, int> focRankCounts = new Dictionary<CardRank, int>();
                 foreach (var card in cards)
                 {
-                    if (!focRankCounts.ContainsKey(card.GetCardModel().GetRank()))
+                    if (!focRankCounts.ContainsKey(card.GetRank()))
                     {
-                        focRankCounts[card.GetCardModel().GetRank()] = 0;
+                        focRankCounts[card.GetRank()] = 0;
                     }
-                    focRankCounts[card.GetCardModel().GetRank()]++;
+                    focRankCounts[card.GetRank()]++;
                 }
                 var fourCardRank = focRankCounts.FirstOrDefault(kv => kv.Value >= 4).Key;
                 return (int)fourCardRank;
@@ -549,11 +549,11 @@ public static class PokerHandCalculator
                 Dictionary<CardRank, int> fhRankCounts = new Dictionary<CardRank, int>();
                 foreach (var card in cards)
                 {
-                    if (!fhRankCounts.ContainsKey(card.GetCardModel().GetRank()))
+                    if (!fhRankCounts.ContainsKey(card.GetRank()))
                     {
-                        fhRankCounts[card.GetCardModel().GetRank()] = 0;
+                        fhRankCounts[card.GetRank()] = 0;
                     }
-                    fhRankCounts[card.GetCardModel().GetRank()]++;
+                    fhRankCounts[card.GetRank()]++;
                 }
                 var threeCardRank = fhRankCounts.FirstOrDefault(kv => kv.Value >= 3).Key;
                 return (int)threeCardRank;
@@ -563,11 +563,11 @@ public static class PokerHandCalculator
                 Dictionary<CardRank, int> tpRankCounts = new Dictionary<CardRank, int>();
                 foreach (var card in cards)
                 {
-                    if (!tpRankCounts.ContainsKey(card.GetCardModel().GetRank()))
+                    if (!tpRankCounts.ContainsKey(card.GetRank()))
                     {
-                        tpRankCounts[card.GetCardModel().GetRank()] = 0;
+                        tpRankCounts[card.GetRank()] = 0;
                     }
-                    tpRankCounts[card.GetCardModel().GetRank()]++;
+                    tpRankCounts[card.GetRank()]++;
                 }
                 var pairRanks = tpRankCounts.Where(kv => kv.Value >= 2)
                                             .OrderByDescending(kv => (int)kv.Key)
@@ -583,11 +583,11 @@ public static class PokerHandCalculator
                 Dictionary<CardRank, int> opRankCounts = new Dictionary<CardRank, int>();
                 foreach (var card in cards)
                 {
-                    if (!opRankCounts.ContainsKey(card.GetCardModel().GetRank()))
+                    if (!opRankCounts.ContainsKey(card.GetRank()))
                     {
-                        opRankCounts[card.GetCardModel().GetRank()] = 0;
+                        opRankCounts[card.GetRank()] = 0;
                     }
-                    opRankCounts[card.GetCardModel().GetRank()]++;
+                    opRankCounts[card.GetRank()]++;
                 }
                 var pairRank = opRankCounts.FirstOrDefault(kv => kv.Value >= 2).Key;
                 return (int)pairRank;

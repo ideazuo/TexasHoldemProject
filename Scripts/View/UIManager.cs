@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -262,7 +262,7 @@ public class UIManager : MonoBehaviour
     private void SetHandCardsPos(Dictionary<int,CardView> cardViews)
     {
         int j = 0;
-        foreach (var cardView in cardViews)
+        foreach (var cardView in cardViews.Values)
         {
             cardView.transform.SetParent(handAreaContainer, false);
             cardView.transform.position = posHandList[j];
@@ -320,21 +320,21 @@ public class UIManager : MonoBehaviour
         // 重新创建手牌区卡牌视图
         foreach (var card in GameController.Instance.GetCardsAreaModel().GetHandAreaCards())
         {
-            handCardViewDict[card.GetCardModel().GetID()] = CreateCardView(card.GetCardModel());
+            handCardViewDict[card.GetID()] = CreateCardView(card);
         }
-        //SetHandCardsPos(handCardViewDict);
+        SetHandCardsPos(handCardViewDict);
 
 
         // 重新创建出牌区卡牌视图
         foreach (var card in GameController.Instance.GetCardsAreaModel().GetPlayAreaCards())
         {
-            CreateCardView(card.GetCardModel());
+            CreateCardView(card);
         }
         
         // 重新创建等待区卡牌视图
         foreach (var card in GameController.Instance.GetCardsAreaModel().GetWaitAreaCards())
         {
-            CreateCardView(card.GetCardModel());
+            CreateCardView(card);
         }
         
         // 更新手牌数量显示

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,28 +22,28 @@ public class OperationRecord
     public OperationType Type { get; private set; }
     
     // 操作涉及的牌
-    public List<CardView> Cards { get; private set; }
+    public List<CardModel> Cards { get; private set; }
     
     // 操作前牌所在的区域
     public Dictionary<int, CardArea> PreviousAreas { get; private set; }
     
     // 构造函数
-    public OperationRecord(OperationType type, List<CardView> cards)
+    public OperationRecord(OperationType type, List<CardModel> cards)
     {
         Type = type;
-        Cards = new List<CardView>(cards);
+        Cards = new List<CardModel>(cards);
         PreviousAreas = new Dictionary<int, CardArea>();
         
         // 记录每张牌的原始区域
         foreach (var card in cards)
         {
-            PreviousAreas[card.GetCardModel().GetID()] = card.GetCardModel().GetArea();
+            PreviousAreas[card.GetID()] = card.GetArea();
         }
     }
     
     // 单张牌的简化构造
-    public OperationRecord(OperationType type, CardView card) 
-        : this(type, new List<CardView> { card })
+    public OperationRecord(OperationType type, CardModel card) 
+        : this(type, new List<CardModel> { card })
     {
     }
 }
@@ -62,7 +62,7 @@ public class OperationHistoryModel
     /// <summary>
     /// 记录一次操作
     /// </summary>
-    public void RecordOperation(OperationType type, List<CardView> cards)
+    public void RecordOperation(OperationType type, List<CardModel> cards)
     {
         // 创建新的操作记录
         OperationRecord record = new OperationRecord(type, cards);
@@ -80,9 +80,9 @@ public class OperationHistoryModel
     /// <summary>
     /// 记录单张牌的操作
     /// </summary>
-    public void RecordOperation(OperationType type, CardView card)
+    public void RecordOperation(OperationType type, CardModel card)
     {
-        RecordOperation(type, new List<CardView> { card });
+        RecordOperation(type, new List<CardModel> { card });
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,7 +61,7 @@ public class ButtonController : MonoBehaviour
         List<CardModel> newCards = GameController.Instance.GetCardGenerator().GenerateCards(cardCount);
         
         // 调用卡牌控制器的方法，添加牌到手牌区
-        //GameController.Instance.GetCardController().AddCardsToHandArea(newCards);
+        GameController.Instance.GetCardController().AddCardsToHandArea(newCards);
     }
 
     /// <summary>

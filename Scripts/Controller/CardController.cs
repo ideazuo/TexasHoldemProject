@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +13,6 @@ public class CardController : MonoBehaviour
     // 模型引用
     private CardsAreaModel cardsAreaModel;
     private OperationHistoryModel operationHistoryModel;
-
-    // 视图引用
-    private UIManager uiManager;
 
     // 初始化方法
     public void Initialize(CardsAreaModel cardsModel)
@@ -38,15 +35,15 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 处理卡牌点击事件
     /// </summary>
-    public void OnCardClicked(CardView card)
+    public void OnCardClicked(CardModel card)
     {
         // 判断卡牌所在区域
-        if (card.GetCardModel().IsInHandArea())
+        if (card.IsInHandArea())
         {
             // 如果是手牌区的牌，移动到出牌区
             MoveCardFromHandToPlay(card);
         }
-        else if (card.GetCardModel().IsInWaitArea())
+        else if (card.IsInWaitArea())
         {
             // 如果是等待区的牌，移动到出牌区
             MoveCardFromWaitToPlay(card);
@@ -57,10 +54,10 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 将牌从手牌区移动到出牌区
     /// </summary>
-    private void MoveCardFromHandToPlay(CardView card)
+    private void MoveCardFromHandToPlay(CardModel card)
     {
         // 检查牌是否可点击
-        if (!card.GetCardModel().IsClickable()) return;
+        if (!card.IsClickable()) return;
         
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
@@ -86,7 +83,7 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 将牌从等待区移动到出牌区
     /// </summary>
-    private void MoveCardFromWaitToPlay(CardView card)
+    private void MoveCardFromWaitToPlay(CardModel card)
     {
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
@@ -140,7 +137,7 @@ public class CardController : MonoBehaviour
     public void MoveClickableCardsToWaitArea()
     {
         // 获取可点击的手牌
-        List<CardView> clickableCards = cardsAreaModel.GetClickableHandAreaCards();
+        List<CardModel> clickableCards = cardsAreaModel.GetClickableHandAreaCards();
         
         // 如果没有可点击的牌，直接返回
         if (clickableCards.Count == 0) return;
@@ -161,7 +158,7 @@ public class CardController : MonoBehaviour
     /// <summary>
     /// 添加新牌到手牌区
     /// </summary>
-    public void AddCardsToHandArea(List<CardView> cards)
+    public void AddCardsToHandArea(List<CardModel> cards)
     {
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.AddCardsToHand, cards);
@@ -182,7 +179,7 @@ public class CardController : MonoBehaviour
     public void ShuffleHandCards()
     {
         // 记录操作
-        List<CardView> handCards = new List<CardView>(cardsAreaModel.GetHandAreaCards());
+        List<CardModel> handCards = new List<CardModel>(cardsAreaModel.GetHandAreaCards());
         operationHistoryModel.RecordOperation(OperationType.ShuffleHandCards, handCards);
         
         // 洗牌
@@ -239,7 +236,7 @@ public class CardController : MonoBehaviour
         foreach (var card in operation.Cards)
         {
             // 获取原始区域
-            CardArea previousArea = operation.PreviousAreas[card.GetCardModel().GetID()];
+            CardArea previousArea = operation.PreviousAreas[card.GetID()];
             
             // 从出牌区移除
             cardsAreaModel.RemoveCardFromPlayArea(card);

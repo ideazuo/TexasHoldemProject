@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -292,7 +292,7 @@ public class GameController : MonoBehaviour
     public void HandlePlayAreaFull()
     {
         // 获取出牌区的牌
-        List<CardView> playAreaCards = cardsAreaModel.GetPlayAreaCards();
+        List<CardModel> playAreaCards = cardsAreaModel.GetPlayAreaCards();
         
         // 如果出牌区有5张牌
         if (playAreaCards.Count == 5)
