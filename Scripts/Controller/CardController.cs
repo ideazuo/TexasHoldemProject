@@ -68,7 +68,8 @@ public class CardController : MonoBehaviour
         // 数据层移动牌
         cardsAreaModel.MoveCardFromHandToPlay(card);
 
-        // 界面层移动牌
+        // 牌移到手牌区，置顶并播放动画
+        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetParent(GameController.Instance.GetUIManager().PlayAreaContainer, true);
         GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetAsLastSibling();
         GameController.Instance.GetUIManager().CardViewDict[card.GetID()].MoveToPosition(GameController.Instance.GetUIManager().GetPlayCardPos());
         
@@ -76,7 +77,7 @@ public class CardController : MonoBehaviour
         UpdateCardsOverlap();
         
         // 更新UI显示
-        //UpdateUI();
+        //UpdateUI();`
         
         // 检查出牌区是否已有5张牌
         CheckPlayAreaFull();

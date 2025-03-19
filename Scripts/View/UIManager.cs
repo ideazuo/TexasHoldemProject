@@ -48,11 +48,19 @@ public class UIManager : MonoBehaviour
     // 出牌区容器
     [SerializeField] private Transform playAreaContainer;
 
+    // 出牌区容器公共属性
+    public Transform PlayAreaContainer
+    {
+        get
+        {
+            return playAreaContainer;
+        }
+    }
+
     // 出牌区坐标容器
     [SerializeField] private Transform posPlayAreaContainer;
 
     // 出牌区坐标List
-    // 手牌区坐标List
     private List<Vector3> posPlayList;
 
     // 等待区容器

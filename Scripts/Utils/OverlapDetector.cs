@@ -13,12 +13,6 @@ public class OverlapDetector
     /// </summary>
     public void CalculateOverlap(Transform handTransform)
     {
-        // 首先将所有牌设置为可点击
-        for (int i = 0; i < handTransform.childCount; i++)
-        {
-            handTransform.GetChild(i).GetComponent<CardView>().GetCardModel().SetClickable(true);
-        }
-
         // 检测遮盖关系
         for (int i = 0; i < handTransform.childCount; i++)
         {
@@ -27,6 +21,11 @@ public class OverlapDetector
                 // 在牌堆中，索引较小的牌在下面，索引较大的牌在上面
                 // 所以当有重叠时，索引较小的牌被遮挡
                 handTransform.GetChild(i).GetComponent<CardView>().GetCardModel().SetClickable(false);
+                handTransform.GetChild(i).GetComponent<CardView>().UpdateClickableState();
+            }
+            else
+            {
+                handTransform.GetChild(i).GetComponent<CardView>().GetCardModel().SetClickable(true);
                 handTransform.GetChild(i).GetComponent<CardView>().UpdateClickableState();
             }
         }
