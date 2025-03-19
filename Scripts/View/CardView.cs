@@ -156,10 +156,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     /// <summary>
     /// 移动卡牌到指定位置
     /// </summary>
-    public void MoveToPosition(Vector3 position, Quaternion rotation)
+    public void MoveToPosition(Vector3 position)
     {
         targetPosition = position;
-        targetRotation = rotation;
         
         // 如果有正在进行的动画，先停止
         if (moveSequence != null && moveSequence.IsActive())
@@ -172,9 +171,6 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         
         // 添加位置动画
         moveSequence.Join(transform.DOMove(targetPosition, moveDuration).SetEase(moveEase));
-        
-        // 添加旋转动画
-        moveSequence.Join(transform.DORotateQuaternion(targetRotation, moveDuration).SetEase(moveEase));
         
         // 添加完成回调(可选)
         moveSequence.OnComplete(() => {

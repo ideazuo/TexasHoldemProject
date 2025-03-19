@@ -20,8 +20,8 @@ public class CardGenerator
         // 随机花色
         CardSuit suit = (CardSuit)Random.Range(0, 4);
         
-        // 随机点数（2-14）
-        CardRank rank = (CardRank)Random.Range(2, 15);
+        // 随机点数（1-13）
+        CardRank rank = (CardRank)Random.Range(1, 14);
         
         // 创建牌模型
         CardModel card = new CardModel(cardIdCounter++, suit, rank);

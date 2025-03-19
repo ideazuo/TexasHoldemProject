@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,14 +65,18 @@ public class CardController : MonoBehaviour
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
         
-        // 移动牌
+        // 数据层移动牌
         cardsAreaModel.MoveCardFromHandToPlay(card);
+
+        // 界面层移动牌
+        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetAsLastSibling();
+        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].MoveToPosition(GameController.Instance.GetUIManager().GetPlayCardPos());
         
         // 更新牌的遮盖关系
         UpdateCardsOverlap();
         
         // 更新UI显示
-        UpdateUI();
+        //UpdateUI();
         
         // 检查出牌区是否已有5张牌
         CheckPlayAreaFull();
@@ -102,7 +106,7 @@ public class CardController : MonoBehaviour
     public void UpdateCardsOverlap()
     {
         // 使用OverlapDetector计算遮盖关系
-        GameController.Instance.GetOverlapDetector().CalculateOverlap(uiManager.HandAreaContainer);
+        GameController.Instance.GetOverlapDetector().CalculateOverlap(GameController.Instance.GetUIManager().HandAreaContainer);
     }
 
     /// <summary>

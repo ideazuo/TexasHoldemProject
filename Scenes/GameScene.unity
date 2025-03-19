@@ -301,17 +301,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 849870668}
     m_Modifications:
-    - target: {fileID: 2639367293299511124, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
-      propertyPath: m_Name
-      value: PosAreaNode
+    - target: {fileID: 3243295599548091152, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3477078508052518736, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5826290416617462043, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6104641041759694128, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
       propertyPath: m_Name
       value: GameView
       objectReference: {fileID: 0}
-    - target: {fileID: 7381864349005067645, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
-      propertyPath: m_Name
-      value: HandAreaNode
+    - target: {fileID: 8102837329997980567, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921679036533754548, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
       propertyPath: m_Pivot.x
@@ -393,8 +401,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8986937511569124410, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
-      propertyPath: m_Enabled
+    - target: {fileID: 9192277512593995891, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -572,9 +580,10 @@ MonoBehaviour:
   levelText: {fileID: 531986570}
   scoreText: {fileID: 531986571}
   handCardCountText: {fileID: 187028405}
-  posAreaContainer: {fileID: 531986575}
+  posHandAreaContainer: {fileID: 531986575}
   handAreaContainer: {fileID: 1449322280}
   playAreaContainer: {fileID: 531986574}
+  posPlayAreaContainer: {fileID: 1730011697}
   waitAreaContainer: {fileID: 531986573}
   resultText: {fileID: 20261700354549342}
   cardPrefab: {fileID: 5890700891017653230, guid: 436963d83d4fecc418834ffa86f9b8e6, type: 3}
@@ -766,6 +775,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1730011697 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1095627702051558506, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+  m_PrefabInstance: {fileID: 531986567}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1764539568
 GameObject:
   m_ObjectHideFlags: 0

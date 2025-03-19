@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,12 +27,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text handCardCountText;
 
     // 手牌区坐标容器
-    [SerializeField] private Transform posAreaContainer;
+    [SerializeField] private Transform posHandAreaContainer;
+
+    // 手牌区坐标List
+    private List<Vector3> posHandList;
 
     // 手牌区容器
     [SerializeField] private Transform handAreaContainer;
 
-    // 手牌区属性
+    // 手牌区容器公共属性
     public Transform HandAreaContainer
     {
         get
@@ -41,9 +44,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
     // 出牌区容器
     [SerializeField] private Transform playAreaContainer;
-    
+
+    // 出牌区坐标容器
+    [SerializeField] private Transform posPlayAreaContainer;
+
+    // 出牌区坐标List
+    // 手牌区坐标List
+    private List<Vector3> posPlayList;
+
     // 等待区容器
     [SerializeField] private Transform waitAreaContainer;
     
@@ -65,12 +76,17 @@ public class UIManager : MonoBehaviour
     // 重新开始按钮
     [SerializeField] private Button restartButton;
     
-    // 模型引用
-    private GameModel gameModel;
-    private CardsAreaModel cardsAreaModel;
-    
     // 所有卡牌视图字典，用于快速查找卡牌对应的视图对象
     private Dictionary<int, CardView> cardViewDict = new Dictionary<int, CardView>();
+
+    // 所有卡牌视图字典公共属性
+    public Dictionary<int,CardView> CardViewDict
+    {
+        get
+        {
+            return cardViewDict;
+        }
+    }
 
     // 手牌区卡牌视图字典
     private Dictionary<int, CardView> handCardViewDict = new Dictionary<int, CardView>();
@@ -80,16 +96,19 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// 初始化UI管理器
     /// </summary>
-    public void Initialize(GameModel gameModel, CardsAreaModel cardsAreaModel)
+    public void Initialize()
     {
-        this.gameModel = gameModel;
-        this.cardsAreaModel = cardsAreaModel;
-        
         // 初始化按钮点击事件
         InitializeButtons();
         
         // 默认显示开始界面
         ShowStartPanel();
+
+        // 初始化手牌区坐标List
+        InitPosHandCardsPos();
+
+        // 初始化出牌区坐标List
+        InitPosPlayCardsPos();
     }
 
     /// <summary>
@@ -163,7 +182,7 @@ public class UIManager : MonoBehaviour
         resultPanel.SetActive(true);
         
         // 更新结果显示
-        bool isWin = gameModel.GetGameResult();
+        bool isWin = GameController.Instance.GetGameModel().GetGameResult();
         resultText.text = isWin ? "游戏胜利！" : "游戏失败！";
         resultText.color = isWin ? Color.green : Color.red;
     }
@@ -173,7 +192,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void UpdateLevelDisplay()
     {
-        levelText.text = "关卡: " + gameModel.GetLevelID();
+        levelText.text = "关卡: " + GameController.Instance.GetGameModel().GetLevelID();
     }
 
     /// <summary>
@@ -181,7 +200,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void UpdateScoreDisplay()
     {
-        scoreText.text = "分数: " + gameModel.GetScore();
+        scoreText.text = "分数: " + GameController.Instance.GetGameModel().GetScore();
     }
 
     /// <summary>
@@ -189,7 +208,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void UpdateHandCardCountDisplay()
     {
-        handCardCountText.text = "手牌: " + cardsAreaModel.GetHandAreaCardCount();
+        handCardCountText.text = "手牌: " + GameController.Instance.GetCardsAreaModel().GetHandAreaCardCount();
     }
 
     /// <summary>
@@ -216,25 +235,52 @@ public class UIManager : MonoBehaviour
         return cardView;
     }
 
-    public void SetHandCardsPos(List<CardView> cardViews)
+    /// <summary>
+    /// 初始化手牌区的坐标
+    /// </summary>
+    private void InitPosHandCardsPos()
     {
-        List<Transform> cardPositions = new List<Transform>();
-        for (int i = 0; i < posAreaContainer.childCount; i++)
+        posHandList = new List<Vector3>();
+        for (int i = 0; i < posHandAreaContainer.childCount; i++)
         {
-            cardPositions.Add(posAreaContainer.GetChild(i));
+            posHandList.Add(posHandAreaContainer.GetChild(i).position);
         }
+    }
 
+    /// <summary>
+    /// 设置手牌区的卡牌坐标
+    /// </summary>
+    /// <param name="cardViews"></param>
+    private void SetHandCardsPos(Dictionary<int,CardView> cardViews)
+    {
         int j = 0;
         foreach (var cardView in cardViews)
         {
             cardView.transform.SetParent(handAreaContainer, false);
-            cardView.transform.position = cardPositions[j].position;
+            cardView.transform.position = posHandList[j];
             j++;
-            if (j >= cardPositions.Count - 1)
+            if (j >= posHandList.Count - 1)
             {
                 j = 0;
             }
         }
+    }
+
+    /// <summary>
+    /// 初始化出牌区的坐标
+    /// </summary>
+    private void InitPosPlayCardsPos()
+    {
+        posPlayList = new List<Vector3>();
+        for (int i = 0; i < posPlayAreaContainer.childCount; i++)
+        {
+            posPlayList.Add(posPlayAreaContainer.GetChild(i).position);
+        }
+    }
+
+    public Vector3 GetPlayCardPos()
+    {
+        return posPlayList[GameController.Instance.GetCardsAreaModel().GetPlayAreaCardCount() - 1];
     }
 
     /// <summary>
@@ -264,7 +310,7 @@ public class UIManager : MonoBehaviour
         ClearAllCardViews();
         
         // 重新创建手牌区卡牌视图
-        foreach (var card in cardsAreaModel.GetHandAreaCards())
+        foreach (var card in GameController.Instance.GetCardsAreaModel().GetHandAreaCards())
         {
             handCardViewDict[card.GetCardModel().GetID()] = CreateCardView(card.GetCardModel());
         }
@@ -272,13 +318,13 @@ public class UIManager : MonoBehaviour
 
 
         // 重新创建出牌区卡牌视图
-        foreach (var card in cardsAreaModel.GetPlayAreaCards())
+        foreach (var card in GameController.Instance.GetCardsAreaModel().GetPlayAreaCards())
         {
             CreateCardView(card.GetCardModel());
         }
         
         // 重新创建等待区卡牌视图
-        foreach (var card in cardsAreaModel.GetWaitAreaCards())
+        foreach (var card in GameController.Instance.GetCardsAreaModel().GetWaitAreaCards())
         {
             CreateCardView(card.GetCardModel());
         }
@@ -332,7 +378,7 @@ public class UIManager : MonoBehaviour
     public void UpdateButtonStates()
     {
         // 判断是否有可移动到等待区的牌
-        bool hasClickableHandCards = cardsAreaModel.GetClickableHandAreaCards().Count > 0;
+        bool hasClickableHandCards = GameController.Instance.GetCardsAreaModel().GetClickableHandAreaCards().Count > 0;
         moveToWaitButton.interactable = hasClickableHandCards;
         
         // 判断是否可以反悔
@@ -340,7 +386,7 @@ public class UIManager : MonoBehaviour
         undoButton.interactable = canUndo;
         
         // 判断是否有手牌可以洗牌
-        bool canShuffle = cardsAreaModel.GetHandAreaCardCount() > 1;
+        bool canShuffle = GameController.Instance.GetCardsAreaModel().GetHandAreaCardCount() > 1;
         shuffleButton.interactable = canShuffle;
     }
 } 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour
         else
         {
             // 初始化UI管理器
-            uiManager.Initialize(gameModel, cardsAreaModel);
+            uiManager.Initialize();
         }
     }
 
@@ -218,20 +218,15 @@ public class GameController : MonoBehaviour
         int cardCount = LevelConfig.GetInitialCardCount(gameModel.GetLevelID());
         
         // 生成牌并添加到手牌区
-        List<CardModel> cardModels = cardGenerator.GenerateCards(cardCount);
-        List<CardView> cardViews = new List<CardView>();
-        for (int i = 0; i < cardModels.Count; i++)
-        {
-            cardViews.Add(uiManager.CreateCardView(cardModels[i]));
-        }
-        cardsAreaModel.AddCardsToHandArea(cardViews);
-        uiManager.SetHandCardsPos(cardViews);
-        
+        List<CardModel> cards = cardGenerator.GenerateCards(cardCount);
+        cardsAreaModel.AddCardsToHandArea(cards);
+
+        // 更新UI显示
+        uiManager.UpdateCardsDisplay();
+
         // 计算牌的遮盖关系
         overlapDetector.CalculateOverlap(uiManager.HandAreaContainer);
         
-        // 更新UI显示
-        //uiManager.UpdateCardsDisplay();
     }
 
     /// <summary>

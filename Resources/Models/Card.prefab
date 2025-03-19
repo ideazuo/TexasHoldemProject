@@ -290,7 +290,7 @@ MonoBehaviour:
   suitImage: {fileID: 2653443126920140658}
   rankText: {fileID: 3949033899040012008}
   coverEffect: {fileID: 4001778422452647597}
-  moveDuration: 0.5
+  moveDuration: 0.15
   moveEase: 7
 --- !u!1 &7277894667561703622
 GameObject:

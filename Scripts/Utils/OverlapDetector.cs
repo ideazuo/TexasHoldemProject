@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
@@ -58,7 +58,7 @@ public class OverlapDetector
                     // 如果两个矩形相交且重叠面积超过阈值，认为被遮挡
                     if (myRect.Overlaps(otherWorldRect))
                     {
-                            return true;
+                        return true;
                     }
                 }
             }
