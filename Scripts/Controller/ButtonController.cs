@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -92,6 +92,23 @@ public class ButtonController : MonoBehaviour
         
         // 调用卡牌控制器的方法，执行洗牌操作
         GameController.Instance.GetCardController().ShuffleHandCards();
+    }
+
+    /// <summary>
+    /// 结束界面按钮点击事件
+    /// </summary>
+    public void OnResultButtonClicked()
+    {
+        // 判断关卡ID
+        if(gameModel.GetLevelID() == 1)
+        {
+            GameController.Instance.GetUIManager().HideResultPanel();
+            GameController.Instance.EnterNextLevel();
+        }
+        else
+        {
+            GameController.Instance.GetUIManager().ShowStartPanel();
+        }
     }
 
     /// <summary>

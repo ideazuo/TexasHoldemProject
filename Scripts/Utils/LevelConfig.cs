@@ -20,10 +20,10 @@ public static class LevelConfig
     private static int level2AdditionalCardCount = 3;
     
     // 关卡1通关所需分数
-    private static int level1WinScore = 15000;
+    private static int level1WinScore = 1000;
     
     // 关卡2通关所需分数
-    private static int level2WinScore = 30000;
+    private static int level2WinScore = 3000;
 
     /// <summary>
     /// 获取指定关卡的初始牌数量

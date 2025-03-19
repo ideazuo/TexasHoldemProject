@@ -244,7 +244,7 @@ public class GameController : MonoBehaviour
             if (currentLevelID == 1)
             {
                 // 进入第二关
-                EnterNextLevel();
+                uiManager.ShowResultPanel();
             }
             // 如果是第二关结束
             else if (currentLevelID == 2)
@@ -258,7 +258,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 进入下一关
     /// </summary>
-    private void EnterNextLevel()
+    public void EnterNextLevel()
     {
         // 关卡ID增加
         gameModel.IncreaseLevelID();

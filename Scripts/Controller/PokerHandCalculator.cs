@@ -67,84 +67,72 @@ public static class PokerHandCalculator
         // 检查同花五条（FlushFiveOfAKind）
         if (IsFlushFiveOfAKind(cards))
         {
-            Debug.Log("同花五条");
             return PokerHandType.FlushFiveOfAKind;
         }
         
         // 检查同花葫芦（FlushFullHouse）
         if (IsFlushFullHouse(cards))
         {
-            Debug.Log("同花葫芦");
             return PokerHandType.FlushFullHouse;
         }
         
         // 检查五条（FiveOfAKind）
         if (IsFiveOfAKind(cards))
         {
-            Debug.Log("五条");
             return PokerHandType.FiveOfAKind;
         }
         
         // 检查同花顺（StraightFlush）
         if (IsStraightFlush(cards))
         {
-            Debug.Log("同花顺");
             return PokerHandType.StraightFlush;
         }
         
         // 检查四条（FourOfAKind）
         if (IsFourOfAKind(cards))
         {
-            Debug.Log("四条");
             return PokerHandType.FourOfAKind;
         }
         
         // 检查葫芦（FullHouse）
         if (IsFullHouse(cards))
         {
-            Debug.Log("葫芦");
             return PokerHandType.FullHouse;
         }
         
         // 检查同花（Flush）
         if (IsFlush(cards))
         {
-            Debug.Log("同花");
             return PokerHandType.Flush;
         }
         
         // 检查顺子（Straight）
         if (IsStraight(cards))
         {
-            Debug.Log("顺子");
             return PokerHandType.Straight;
         }
         
         // 检查三条（ThreeOfAKind）
         if (IsThreeOfAKind(cards))
         {
-            Debug.Log("三条");
             return PokerHandType.ThreeOfAKind;
         }
         
         // 检查两对（TwoPair）
         if (IsTwoPair(cards))
         {
-            Debug.Log("两对");
             return PokerHandType.TwoPair;
         }
         
         // 检查一对（OnePair）
         if (IsOnePair(cards))
         {
-            Debug.Log("对子");
             return PokerHandType.OnePair;
         }
         
         // 如果牌数量大于0，默认为高牌（HighCard）
         if (cards.Count > 0)
         {
-            Debug.Log("高牌");
             return PokerHandType.HighCard;
         }
         

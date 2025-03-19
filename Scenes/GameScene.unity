@@ -326,7 +326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4633902714132537654, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 600
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 5826290416617462043, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
       propertyPath: m_Color.a
@@ -613,6 +613,18 @@ MonoBehaviour:
   shuffleButton: {fileID: 1125960183}
   startButton: {fileID: 1518354183}
   restartButton: {fileID: 1125960182}
+  resultButton: {fileID: 883454946}
+--- !u!114 &883454946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1946115058224192468, guid: 1417cd2ec7fb12242886bc879ed456cc, type: 3}
+  m_PrefabInstance: {fileID: 1677103275113245962}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1125960182 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7155706027421785584, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}

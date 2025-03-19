@@ -86,7 +86,10 @@ public class UIManager : MonoBehaviour
     
     // 重新开始按钮
     [SerializeField] private Button restartButton;
-    
+
+    // 结束界面按钮
+    [SerializeField] private Button resultButton;
+
     // 所有卡牌视图字典，用于快速查找卡牌对应的视图对象
     private Dictionary<int, CardView> cardViewDict = new Dictionary<int, CardView>();
 
@@ -162,6 +165,12 @@ public class UIManager : MonoBehaviour
         restartButton.onClick.AddListener(() => {
             GameController.Instance.StartGame();
         });
+
+        // 结束界面按钮
+        resultButton.onClick.AddListener(() =>
+        {
+            ButtonController.Instance.OnResultButtonClicked();
+        });
     }
 
     /// <summary>
@@ -194,14 +203,28 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void ShowResultPanel()
     {
-        startPanel.SetActive(false);
-        gamePanel.SetActive(false);
         resultPanel.SetActive(true);
-        
-        // 更新结果显示
-        bool isWin = GameController.Instance.GetGameModel().GetGameResult();
-        resultText.text = isWin ? "游戏胜利！" : "游戏失败！";
-        resultText.color = isWin ? Color.green : Color.red;
+
+        if(GameController.Instance.GetGameModel().GetLevelID() == 1)
+        {
+            resultText.text = "第二关难度飙升！";
+            resultText.color = Color.green;
+        }
+        else
+        {
+            // 更新结果显示
+            bool isWin = GameController.Instance.GetGameModel().GetGameResult();
+            resultText.text = isWin ? "游戏胜利！" : "游戏失败！";
+            resultText.color = isWin ? Color.green : Color.red;
+        }
+    }
+
+    /// <summary>
+    /// 隐藏结果界面
+    /// </summary>
+    public void HideResultPanel()
+    {
+        resultPanel.SetActive(false);
     }
 
     /// <summary>
@@ -217,7 +240,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void UpdateScoreDisplay()
     {
-        scoreText.text = "分数: " + GameController.Instance.GetGameModel().GetScore();
+        scoreText.text = "分数: " + GameController.Instance.GetGameModel().GetScore() + " / " + LevelConfig.GetWinScore(GameController.Instance.GetGameModel().GetLevelID());
     }
 
     /// <summary>
