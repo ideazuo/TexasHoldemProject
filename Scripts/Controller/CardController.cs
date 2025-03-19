@@ -68,16 +68,17 @@ public class CardController : MonoBehaviour
         // 牌移到手牌区，置顶并播放动画
         GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetParent(GameController.Instance.GetUIManager().PlayAreaContainer, true);
         GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetAsLastSibling();
-        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].MoveToPosition(GameController.Instance.GetUIManager().GetPlayCardPos());
-        
+        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].MoveToPosition(GameController.Instance.GetUIManager().GetPlayCardPos(), CheckPlayAreaFull);
+
         // 更新牌的遮盖关系
         UpdateCardsOverlap();
-        
+
         // 更新UI显示
-        //UpdateUI();`
-        
-        // 检查出牌区是否已有5张牌
-        CheckPlayAreaFull();
+        UpdateHandCardNumUI();
+
+        // 更新出牌区牌型显示
+        UpdatePlayCardTypeUI();
+
     }
 
     /// <summary>
@@ -120,6 +121,15 @@ public class CardController : MonoBehaviour
     }
 
     /// <summary>
+    /// 更新UI手牌数显示
+    /// </summary>
+    private void UpdateHandCardNumUI()
+    {
+        // 更新卡牌显示
+        GameController.Instance.GetUIManager().UpdateHandCardCountDisplay();
+    }
+
+    /// <summary>
     /// 检查出牌区是否已满
     /// </summary>
     private void CheckPlayAreaFull()
@@ -129,6 +139,20 @@ public class CardController : MonoBehaviour
             // 通知游戏控制器处理出牌区已满的情况
             GameController.Instance.HandlePlayAreaFull();
         }
+
+        if (cardsAreaModel.GetHandAreaCardCount() == 0)
+        {
+            // 检查游戏状态
+            GameController.Instance.CheckGameState();
+        }
+    }
+
+    /// <summary>
+    /// 更新出牌区牌型显示
+    /// </summary>
+    private void UpdatePlayCardTypeUI()
+    {
+        GameController.Instance.HandlePlayType();
     }
 
     /// <summary>

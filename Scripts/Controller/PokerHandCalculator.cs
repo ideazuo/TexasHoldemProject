@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -56,7 +56,7 @@ public static class PokerHandCalculator
     /// <summary>
     /// 评估牌的牌型
     /// </summary>
-    private static PokerHandType EvaluateHand(List<CardModel> cards)
+    public static PokerHandType EvaluateHand(List<CardModel> cards)
     {
         // 检查牌数量
         if (cards == null || cards.Count == 0)
@@ -67,72 +67,84 @@ public static class PokerHandCalculator
         // 检查同花五条（FlushFiveOfAKind）
         if (IsFlushFiveOfAKind(cards))
         {
+            Debug.Log("同花五条");
             return PokerHandType.FlushFiveOfAKind;
         }
         
         // 检查同花葫芦（FlushFullHouse）
         if (IsFlushFullHouse(cards))
         {
+            Debug.Log("同花葫芦");
             return PokerHandType.FlushFullHouse;
         }
         
         // 检查五条（FiveOfAKind）
         if (IsFiveOfAKind(cards))
         {
+            Debug.Log("五条");
             return PokerHandType.FiveOfAKind;
         }
         
         // 检查同花顺（StraightFlush）
         if (IsStraightFlush(cards))
         {
+            Debug.Log("同花顺");
             return PokerHandType.StraightFlush;
         }
         
         // 检查四条（FourOfAKind）
         if (IsFourOfAKind(cards))
         {
+            Debug.Log("四条");
             return PokerHandType.FourOfAKind;
         }
         
         // 检查葫芦（FullHouse）
         if (IsFullHouse(cards))
         {
+            Debug.Log("葫芦");
             return PokerHandType.FullHouse;
         }
         
         // 检查同花（Flush）
         if (IsFlush(cards))
         {
+            Debug.Log("同花");
             return PokerHandType.Flush;
         }
         
         // 检查顺子（Straight）
         if (IsStraight(cards))
         {
+            Debug.Log("顺子");
             return PokerHandType.Straight;
         }
         
         // 检查三条（ThreeOfAKind）
         if (IsThreeOfAKind(cards))
         {
+            Debug.Log("三条");
             return PokerHandType.ThreeOfAKind;
         }
         
         // 检查两对（TwoPair）
         if (IsTwoPair(cards))
         {
+            Debug.Log("两对");
             return PokerHandType.TwoPair;
         }
         
         // 检查一对（OnePair）
         if (IsOnePair(cards))
         {
+            Debug.Log("对子");
             return PokerHandType.OnePair;
         }
         
         // 如果牌数量大于0，默认为高牌（HighCard）
         if (cards.Count > 0)
         {
+            Debug.Log("高牌");
             return PokerHandType.HighCard;
         }
         
@@ -174,7 +186,7 @@ public static class PokerHandCalculator
                 return false;
             }
         }
-        
+
         return true;
     }
     
@@ -208,7 +220,7 @@ public static class PokerHandCalculator
             }
             rankCounts[card.GetRank()]++;
         }
-        
+
         // 葫芦结构必须有且仅有两种点数，一种出现3次，另一种出现2次
         return rankCounts.Count == 2 && rankCounts.Values.Contains(3) && rankCounts.Values.Contains(2);
     }
@@ -237,7 +249,7 @@ public static class PokerHandCalculator
         {
             return false;
         }
-        
+
         // 同花顺：同一花色的顺子
         return IsFlush(cards) && IsStraight(cards);
     }
@@ -262,7 +274,7 @@ public static class PokerHandCalculator
             }
             rankCounts[card.GetRank()]++;
         }
-        
+
         // 如果有任何一个点数出现了4次或更多，则为四条
         return rankCounts.Values.Any(count => count >= 4);
     }
@@ -287,7 +299,7 @@ public static class PokerHandCalculator
             }
             rankCounts[card.GetRank()]++;
         }
-        
+
         // 葫芦结构必须有且仅有两种点数，一种出现3次，另一种出现2次
         return rankCounts.Count == 2 && rankCounts.Values.Contains(3) && rankCounts.Values.Contains(2);
     }
@@ -301,7 +313,7 @@ public static class PokerHandCalculator
         {
             return false;
         }
-        
+
         // 同花：所有牌都是相同花色
         CardSuit firstSuit = cards[0].GetSuit();
         return cards.All(c => c.GetSuit() == firstSuit);
@@ -352,7 +364,7 @@ public static class PokerHandCalculator
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -412,7 +424,7 @@ public static class PokerHandCalculator
         
         // 计算有多少对子
         int pairCount = rankCounts.Values.Count(count => count >= 2);
-        
+
         // 如果有2对或更多，则为两对
         return pairCount >= 2;
     }
@@ -444,7 +456,7 @@ public static class PokerHandCalculator
         {
             int pairCount = rankCounts.Values.Count(count => count == 2);
             int threeCount = rankCounts.Values.Count(count => count >= 3);
-            
+
             // 只有一个对子且没有三条
             return pairCount == 1 && threeCount == 0;
         }

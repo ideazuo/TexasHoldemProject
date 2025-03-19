@@ -156,7 +156,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     /// <summary>
     /// 移动卡牌到指定位置
     /// </summary>
-    public void MoveToPosition(Vector3 position)
+    public void MoveToPosition(Vector3 position, System.Action onComplete = null)
     {
         targetPosition = position;
         
@@ -178,6 +178,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler
             transform.position = targetPosition;
             transform.rotation = targetRotation;
             OnDestroyMove();
+
+            // 调用外部传入的回调函数
+            onComplete?.Invoke();
         });
     }
 

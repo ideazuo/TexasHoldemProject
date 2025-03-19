@@ -262,10 +262,16 @@ public class GameController : MonoBehaviour
     {
         // 关卡ID增加
         gameModel.IncreaseLevelID();
-        
+
+        // 清空分数
+        gameModel.ResetScore();
+
+        // 更新UI分数显示
+        uiManager.UpdateScoreDisplay();
+
         // 生成新的手牌
         GenerateInitialCards();
-        
+
         // 更新UI显示当前关卡
         uiManager.UpdateLevelDisplay();
     }
@@ -287,6 +293,16 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 评估出牌区牌型
+    /// </summary>
+    public void HandlePlayType()
+    {
+        // 获取出牌区的牌
+        List<CardModel> playAreaCards = cardsAreaModel.GetPlayAreaCards();
+        uiManager.UpdatePlayCardTypeDisplay(PokerHandCalculator.EvaluateHand(playAreaCards));
+    }
+
+    /// <summary>
     /// 处理出牌区牌数量达到5张的情况
     /// </summary>
     public void HandlePlayAreaFull()
@@ -305,10 +321,10 @@ public class GameController : MonoBehaviour
             
             // 清空出牌区
             cardsAreaModel.ClearPlayArea();
+            uiManager.ClearAllPlayCardViews();
             
-            // 更新UI显示
+            // 更新UI分数显示
             uiManager.UpdateScoreDisplay();
-            uiManager.UpdateCardsDisplay();
         }
     }
 } 

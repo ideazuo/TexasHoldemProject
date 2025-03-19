@@ -26,6 +26,9 @@ public class UIManager : MonoBehaviour
     // 游戏界面上显示手牌区牌数量的文本
     [SerializeField] private Text handCardCountText;
 
+    // 出牌区牌型的文本
+    [SerializeField] private Text playCardTypeText;
+
     // 手牌区坐标容器
     [SerializeField] private Transform posHandAreaContainer;
 
@@ -98,6 +101,12 @@ public class UIManager : MonoBehaviour
 
     // 手牌区卡牌视图字典
     private Dictionary<int, CardView> handCardViewDict = new Dictionary<int, CardView>();
+
+    // 出牌区卡牌视图字典
+    private Dictionary<int, CardView> playCardViewDict = new Dictionary<int, CardView>();
+
+    // 等待区卡牌视图字典
+    private Dictionary<int, CardView> waitCardViewDict = new Dictionary<int, CardView>();
 
 
 
@@ -220,6 +229,66 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 更新出牌区牌型
+    /// </summary>
+    public void UpdatePlayCardTypeDisplay(PokerHandType pokerHandType)
+    {
+        switch (pokerHandType)
+        {
+            case PokerHandType.Null:
+                playCardTypeText.text = "";
+                return;
+            case PokerHandType.HighCard:
+                playCardTypeText.text = "高牌";
+                return;
+            case PokerHandType.OnePair:
+                playCardTypeText.text = "对子";
+                return;
+            case PokerHandType.TwoPair:
+                playCardTypeText.text = "两对";
+                return;
+            case PokerHandType.ThreeOfAKind:
+                playCardTypeText.text = "三条";
+                return;
+            case PokerHandType.Straight:
+                playCardTypeText.text = "顺子";
+                return;
+            case PokerHandType.Flush:
+                playCardTypeText.text = "同花";
+                return;
+            case PokerHandType.FullHouse:
+                playCardTypeText.text = "葫芦";
+                return;
+            case PokerHandType.FourOfAKind:
+                playCardTypeText.text = "四条";
+                return;
+            case PokerHandType.StraightFlush:
+                playCardTypeText.text = "同花顺";
+                return;
+            case PokerHandType.FiveOfAKind:
+                playCardTypeText.text = "五条";
+                return;
+            case PokerHandType.FlushFullHouse:
+                playCardTypeText.text = "同花葫芦";
+                return;
+            case PokerHandType.FlushFiveOfAKind:
+                playCardTypeText.text = "同花五条";
+                return;
+            default:
+                playCardTypeText.text = "";
+                return;
+        }
+    }
+
+    /// <summary>
+    /// 清空出牌区牌型显示
+    /// </summary>
+    public void ClearPlayCardTypeDisplay()
+    {
+        playCardTypeText.text = "";
+    }
+
+    /// <summary>
     /// 创建卡牌视图对象
     /// </summary>
     public CardView CreateCardView(CardModel cardModel)
@@ -328,13 +397,13 @@ public class UIManager : MonoBehaviour
         // 重新创建出牌区卡牌视图
         foreach (var card in GameController.Instance.GetCardsAreaModel().GetPlayAreaCards())
         {
-            CreateCardView(card);
+            playCardViewDict[card.GetID()] = CreateCardView(card);
         }
         
         // 重新创建等待区卡牌视图
         foreach (var card in GameController.Instance.GetCardsAreaModel().GetWaitAreaCards())
         {
-            CreateCardView(card);
+            waitCardViewDict[card.GetID()] = CreateCardView(card);
         }
         
         // 更新手牌数量显示
@@ -344,29 +413,67 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// 清空所有卡牌视图
     /// </summary>
-    private void ClearAllCardViews()
+    public void ClearAllCardViews()
     {
         // 清空手牌区
+        ClearAllHandCardViews();
+
+        // 清空出牌区
+        ClearAllPlayCardViews();
+
+        // 清空等待区
+        ClearAllWaitCardViews();
+
+        // 清空字典
+        cardViewDict.Clear();
+    }
+
+    /// <summary>
+    /// 清空手牌区
+    /// </summary>
+    public void ClearAllHandCardViews()
+    {
         foreach (Transform child in handAreaContainer)
         {
             Destroy(child.gameObject);
         }
-        
-        // 清空出牌区
+
+        // 清空字典
+        handCardViewDict.Clear();
+    }
+
+    /// <summary>
+    /// 清空出牌区
+    /// </summary>
+    public void ClearAllPlayCardViews()
+    {
         foreach (Transform child in playAreaContainer)
         {
             Destroy(child.gameObject);
         }
-        
-        // 清空等待区
+
+        // 清空字典
+        playCardViewDict.Clear();
+
+        // 清空牌型文本显示
+        ClearPlayCardTypeDisplay();
+    }
+
+    /// <summary>
+    /// 清空等待区
+    /// </summary>
+    public void ClearAllWaitCardViews()
+    {
         foreach (Transform child in waitAreaContainer)
         {
             Destroy(child.gameObject);
         }
-        
+
+
         // 清空字典
-        cardViewDict.Clear();
+        waitCardViewDict.Clear();
     }
+
 
     /// <summary>
     /// 获取卡牌视图
