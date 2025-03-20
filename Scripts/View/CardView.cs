@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening; // 需要引入DOTween命名空间
+using System;
 
 /// <summary>
 /// 卡牌视图，负责单张牌的视觉表现
@@ -22,12 +23,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     // 卡牌模型引用
     private CardModel cardModel;
     
-    // 卡牌的目标位置和旋转
+    // 卡牌的目标位置
     private Vector3 targetPosition;
-    private Quaternion targetRotation;
     
     // 移动动画的持续时间
-    [SerializeField] private float moveDuration = 0.5f;
+    [SerializeField] private float moveSpeed = 0.5f;
     [SerializeField] private Ease moveEase = Ease.InOutQuad; // DOTween内置的缓动函数
     
     // 是否正在移动
@@ -168,15 +168,15 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         
         // 创建新的动画序列
         moveSequence = DOTween.Sequence();
-        
+
         // 添加位置动画
+        float moveDuration = CalculateDuration(transform.position, targetPosition, moveSpeed);
         moveSequence.Join(transform.DOMove(targetPosition, moveDuration).SetEase(moveEase));
         
-        // 添加完成回调(可选)
+        // 添加完成回调
         moveSequence.OnComplete(() => {
-            // 确保最终位置和旋转准确
+            // 确保最终位置
             transform.position = targetPosition;
-            transform.rotation = targetRotation;
             OnDestroyMove();
 
             // 调用外部传入的回调函数
@@ -191,5 +191,14 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         {
             moveSequence.Kill();
         }
+    }
+
+    private float CalculateDuration(Vector3 vector_a, Vector3 vector_b,float speed)
+    {
+        float distance_x = Math.Abs(vector_a.x - vector_b.x);
+        float distance_y = Math.Abs(vector_a.y - vector_b.y);
+        float distance = (float)(Math.Sqrt(Math.Pow(distance_x, 2) + Math.Pow(distance_y, 2)));
+        float moveDuration = distance / speed;
+        return moveDuration;
     }
 } 

@@ -61,13 +61,12 @@ public class CardController : MonoBehaviour
         
         // 记录操作
         operationHistoryModel.RecordOperation(OperationType.MoveCardToPlay, card);
-        
-        // 数据层移动牌
-        cardsAreaModel.MoveCardFromHandToPlay(card);
 
-        // 牌移到手牌区，置顶并播放动画
-        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetParent(GameController.Instance.GetUIManager().PlayAreaContainer, true);
-        GameController.Instance.GetUIManager().CardViewDict[card.GetID()].GetComponent<Transform>().SetAsLastSibling();
+        // 数据层和UI层移动牌
+        GameController.Instance.GetUIManager().MoveCardFromHandToPlay(card);
+        cardsAreaModel.MoveCardFromHandToPlay(card);
+        
+        // 播放动画
         GameController.Instance.GetUIManager().CardViewDict[card.GetID()].MoveToPosition(GameController.Instance.GetUIManager().GetPlayCardPos(), CheckPlayAreaFull);
 
         // 更新牌的遮盖关系

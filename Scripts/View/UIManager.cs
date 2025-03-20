@@ -527,4 +527,18 @@ public class UIManager : MonoBehaviour
         bool canShuffle = GameController.Instance.GetCardsAreaModel().GetHandAreaCardCount() > 1;
         shuffleButton.interactable = canShuffle;
     }
+
+    /// <summary>
+    /// UI上将CardView从手牌区移到出牌区
+    /// </summary>
+    /// <param name="card"></param>
+    public void MoveCardFromHandToPlay(CardModel card)
+    {
+        CardViewDict[card.GetID()].GetComponent<Transform>().SetParent(playAreaContainer, true);
+        CardViewDict[card.GetID()].GetComponent<Transform>().SetAsLastSibling();
+
+        playCardViewDict[card.GetID()] = handCardViewDict[card.GetID()];
+        handCardViewDict.Remove(card.GetID());
+
+    }
 } 

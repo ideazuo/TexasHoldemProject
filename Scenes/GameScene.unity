@@ -324,6 +324,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4478413765843356747, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
+      propertyPath: m_Text
+      value: "\u6682\u5B58\u724C"
+      objectReference: {fileID: 0}
     - target: {fileID: 4633902714132537654, guid: af7a3ac8dc6ec7f4e9c757688fe63309, type: 3}
       propertyPath: m_SizeDelta.x
       value: 800
